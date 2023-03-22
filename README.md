@@ -4,9 +4,9 @@
 **自動安裝以下開發工具**
 * node
 * php v7.4
-* laravel
+* laravel v8.6
 * apache
-* mysql
-* docker
+* mysql v8.0
+* docker v20.10
 * vs code
 * git
