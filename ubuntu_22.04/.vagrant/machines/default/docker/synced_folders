@@ -1,1 +1,1 @@
-{"docker":{"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/monosparta/all-in-one/ubuntu_20.04","disabled":false,"__vagrantfile":true}}}
+{"docker":{"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/monosparta/all-in-one/ubuntu_22.04","disabled":false,"__vagrantfile":true}}}

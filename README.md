@@ -7,6 +7,7 @@
 * laravel v8.6
 * apache
 * mysql v8.0
-* docker v20.10
+* docker
 * vs code
 * git
+* mosquitto
