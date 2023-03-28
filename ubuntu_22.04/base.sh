@@ -18,6 +18,9 @@ echo -e "\n${BLUE}${BOLD}=> ${WHITE}Check for sudo permission${CLEAR}"
 sudo -v
 
 install-basic-tools() {
+    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Nano${CLEAR}"
+    sudo apt-get install nano
+
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Git & GPG${CLEAR}"
     sudo -E apt -y install git gpg
 
@@ -26,12 +29,18 @@ install-basic-tools() {
 
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Curl${CLEAR}"
     sudo apt -y install curl
-    
+
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Update${CLEAR}"
     sudo apt update
 
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Htop${CLEAR}"
     sudo -E apt -y install htop
+
+    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Net-tools${CLEAR}"
+    sudo apt-get install net-tools
+
+    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}snapd${CLEAR}"
+    sudo apt -y install snapd
 }
 
 setup-basic-config() {
@@ -87,6 +96,9 @@ install-node() {
 }
 
 install-docker() {
+    echo -e "\n${YELLOW}${BOLD}STEP ${BLUE}=> ${WHITE}Start Snap service${CLEAR}"
+    sudo systemctl start snapd.service
+
     echo -e "\n${YELLOW}${BOLD}STEP ${BLUE}=> ${WHITE}Install Docker by snap${CLEAR}"
     sudo snap install docker
 }
@@ -95,17 +107,23 @@ install-laravel() {
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Install Tasksel${CLEAR}"
     sudo apt install tasksel -y
 
-    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Use Tasksel to install lamp-server${CLEAR}"
-    sudo tasksel install lamp-server
-
-    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Update${CLEAR}"
-    sudo apt update
+    # echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Use Tasksel to install lamp-server${CLEAR}"
+    # sudo tasksel install lamp-server
 
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Install Apache${CLEAR}"
     sudo apt install apache2 -y
 
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Install MySQL${CLEAR}"
     sudo apt install mysql-server -y
+
+    # echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Start apache2${CLEAR}"
+    # sudo systemctl start apache2
+
+    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Install php packeges${CLEAR}"
+    sudo apt install -y  php libapache2-mod-php php-mbstring php-cli php-bcmath php-json php-xml php-zip php-pdo php-common php-tokenizer php-mysql
+
+    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Update${CLEAR}"
+    sudo apt update
 
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Install composer${CLEAR}"
     curl -sS https://getcomposer.org/installer | php
@@ -115,6 +133,15 @@ install-laravel() {
 
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Assign execute permission${CLEAR}"
     sudo chmod +x /usr/local/bin/composer
+
+    # echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Navigate to the webroot directory${CLEAR}"
+    # cd /var/www/html
+
+    # echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Install laravel${CLEAR}"
+    # sudo composer create-project laravel/laravel laravelapp
+
+    # sudo chown -R www-data:www-data /var/www/html/laravelapp
+    # sudo chmod -R 775 /var/www/html/laravelapp/storage
 }
 
 install-vscode() {
@@ -124,6 +151,13 @@ install-vscode() {
     echo -e "${CYAN}${BOLD}STEP ${BLUE}=> ${WHITE}Install${CLEAR}"
     cp code.deb /tmp
     sudo -E apt -y install /tmp/code.deb
+}
+
+install-mosquitto() {
+    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Mosquitto${CLEAR}"
+    sudo apt-get update
+    sudo apt-get -y install mosquitto
+    sudo apt-get -y install mosquitto-clients
 }
 
 clean-up() {
@@ -139,6 +173,9 @@ install-all() {
 
     echo -e "\n${GREEN}${BOLD}SETUP ${BLUE}=> ${CYAN}Setup basic config${CLEAR}"
     setup-basic-config
+
+    echo -e "\n${GREEN}${BOLD}SETUP ${BLUE}=> ${CYAN}Install Mosquitto${CLEAR}"
+    install-mosquitto
 
     echo -e "\n${GREEN}${BOLD}SETUP ${BLUE}=> ${CYAN}Install Node.js${CLEAR}"
     install-node
