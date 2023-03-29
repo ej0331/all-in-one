@@ -81,18 +81,16 @@ setup_basic_config() {
 }
 
 install_node() {
+    sudo apt-get update
+
     echo -e "\n${YELLOW}${BOLD}STEP ${BLUE}=> ${WHITE}Install nvm${CLEAR}"
-    export NVM_DIR="$HOME/.nvm" && (
-        git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
-        cd "$NVM_DIR"
-        git checkout $(git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1))
-    ) && \. "$NVM_DIR/nvm.sh"
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
-    echo -e "\n${YELLOW}${BOLD}STEP ${BLUE}=> ${WHITE}Install latest lts version${CLEAR}"
-    nvm install --lts
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
-    echo -e "\n${YELLOW}${BOLD}STEP ${BLUE}=> ${WHITE}Enable corepack for yarn and pnpm${CLEAR}"
-    corepack enable
+    nvm install node
 }
 
 install_docker() {
@@ -100,17 +98,17 @@ install_docker() {
 
     echo -e "\n${YELLOW}${BOLD}STEP ${BLUE}=> ${WHITE}Install Docker Engine${CLEAR}"
     sudo apt-get install -y \
-    ca-certificates \
-    curl \
-    gnupg
+        ca-certificates \
+        curl \
+        gnupg
 
     sudo mkdir -m 0755 -p /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
     echo \
-    "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-    "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" |
+        sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 
     sudo apt-get update
 
@@ -129,7 +127,7 @@ install_laravel() {
 
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Install php packeges${CLEAR}"
     sudo DEBIAN_FRONTEND=noninteractive apt install -y php8.1 libapache2-mod-php php-mbstring php-cli php-bcmath php-json php-xml php-zip php-pdo php-common php-tokenizer php-mysql
-    
+
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Update${CLEAR}"
     sudo apt-get update
 
@@ -141,7 +139,7 @@ install_laravel() {
 
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Assign execute permission${CLEAR}"
     sudo chmod +x /usr/local/bin/composer
-    
+
     # 需要啟專案再打開
     # echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Navigate to the webroot directory${CLEAR}"
     # cd /var/www/html
@@ -183,6 +181,9 @@ install_all() {
     echo -e "\n${GREEN}${BOLD}SETUP ${BLUE}=> ${CYAN}Setup basic config${CLEAR}"
     setup_basic_config
 
+    echo -e "\n${GREEN}${BOLD}SETUP ${BLUE}=> ${CYAN}Install Node.js${CLEAR}"
+    install_node
+
     echo -e "\n${GREEN}${BOLD}SETUP ${BLUE}=> ${CYAN}Install Mosquitto${CLEAR}"
     install_mosquitto
 
@@ -203,17 +204,26 @@ install_all() {
 }
 
 check_version() {
+    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Check NVM version${CLEAR}"
+    nvm --version
+
+    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Check node version${CLEAR}"
+    node -v
+
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Check Php version${CLEAR}"
     php -version
-
-    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Check Mysql version${CLEAR}"
-    mysql -V
 
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Check Composer version${CLEAR}"
     composer --version
 
+    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Check Mysql version${CLEAR}"
+    mysql -V
+
     echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Check Docker version${CLEAR}"
     docker --version
+
+    echo -e "\n${YELLOW}${BOLD}SOFTWARE ${BLUE}=> ${WHITE}Check Mosquitto version${CLEAR}"
+    mosquitto -h
 }
 
 install_all
