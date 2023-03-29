@@ -1,7 +1,11 @@
-# all-in-one
+# Ubuntu 22.04基於ARM64的script
 
-## 基於ARM64 Ubuntu 22.04
-**自動安裝以下開發工具**
+Vagrant透過docker建立虛擬環境
+```
+vagrant up --provider=docker 
+```
+
+建立環境時自動安裝以下開發工具
 * node
 * php v7.4
 * laravel v8.6
