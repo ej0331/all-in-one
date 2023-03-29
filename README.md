@@ -8,7 +8,7 @@ vagrant up --provider=docker
 建立環境時自動安裝以下開發工具
 * node
 * php
-* laravel
+* composer
 * apache
 * mysql
 * docker
